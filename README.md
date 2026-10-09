@@ -1,6 +1,7 @@
 Link to the working app: https://joshikakaipu.github.io/Pocket-Shop/
 
 Pocket Shop
+
 A lightweight, crash-proof tool for tracking art print sales, stock levels, profit, best sellers, and pricing suggestions.
 
 Choose Your Version
