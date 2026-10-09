@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Print Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EDF0F3;--card:#FFFFFF;--ink:#1B2140;--mute:#667088;--line:#D8DDE6;--acc:#2F5BEA;--accink:#FFFFFF;--good:#16794D;--bad:#C0392B;--warn:#9A6200;--hero:#1B2140;--heroink:#F2F4FA;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1220;--card:#181C30;--ink:#EEF0F8;--mute:#9AA3BD;--line:#2A3050;--acc:#7C9BFF;--accink:#0F1220;--good:#4CC38A;--bad:#FF7A6B;--warn:#E5B04A;--hero:#212848;--heroink:#F2F4FA}}
+:root[data-theme="dark"]{--bg:#0F1220;--card:#181C30;--ink:#EEF0F8;--mute:#9AA3BD;--line:#2A3050;--acc:#7C9BFF;--accink:#0F1220;--good:#4CC38A;--bad:#FF7A6B;--warn:#E5B04A;--hero:#212848;--heroink:#F2F4FA}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+main{max-width:640px;margin:0 auto;padding:0 14px 110px}
+.hero{background:var(--hero);color:var(--heroink);margin:0 -14px 16px;padding:22px 20px 20px;border-radius:0 0 24px 24px}
+.hero small{opacity:.7;font-size:14px}
+.hero .big{font-size:44px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.hero .row{display:flex;gap:18px;margin-top:10px;font-size:14px;flex-wrap:wrap}
+.hero .row b{font-weight:600}
+h2{font-size:20px;margin:22px 0 10px;font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.item{display:flex;align-items:center;gap:12px}
+.item .grow{flex:1;min-width:0}
+.name{font-weight:600;font-size:17px;overflow-wrap:anywhere}
+.mute{color:var(--mute);font-size:14px}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:var(--acc);color:var(--accink);min-height:46px}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.sm{padding:8px 12px;min-height:38px;font-size:14px}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.sell{min-width:104px;font-size:17px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute)}
+input{font:inherit;font-size:16px;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.stat b{display:block;font-size:22px;font-weight:800;letter-spacing:-.01em}
+.bar{height:10px;border-radius:6px;background:var(--line);margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:6px}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;border:1px solid var(--line);font-size:13px;color:var(--mute);margin-right:6px}
+ul.todo{margin:0;padding-left:20px}ul.todo li{margin:6px 0}
+.empty{text-align:center;padding:30px 16px;color:var(--mute)}
+nav{position:fixed;left:0;right:0;bottom:0;padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px));background:var(--card);border-top:1px solid var(--line);display:flex;gap:8px;justify-content:center;z-index:5}
+nav button{flex:1;max-width:200px;background:transparent;color:var(--mute);min-height:48px}
+nav button[aria-current="true"]{background:var(--acc);color:var(--accink)}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;z-index:9;transition:opacity .25s}
+.pop{animation:pop .25s}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.dlg{background:var(--card);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+@keyframes pop{50%{transform:scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero" aria-live="polite">
+    <small>Net profit so far</small>
+    <div class="big" id="net">$0.00</div>
+    <div class="row" id="heroRow"></div>
+  </section>
+  <div id="app"></div>
+</main>
+<nav aria-label="Sections">
+  <button data-tab="sell">Sell</button>
+  <button data-tab="prints">Prints</button>
+  <button data-tab="summary">Summary</button>
+</nav>
+<div class="toast" id="toast" style="opacity:0" role="status"></div>
+
+<script>
+var state={prints:[],sales:[]},tab="sell",KEY="printLedger.v1";
+function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);if(d&&d.prints&&d.sales)state=d}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+var $=function(s){return document.querySelector(s)};
+var uid=function(){return Math.random().toString(36).slice(2,10)};
+var money=function(n){return (n<0?"-":"")+"$"+Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+
+function stats(p){
+  var s=state.sales.filter(function(x){return x.pid===p.id});
+  var rev=s.reduce(function(a,x){return a+x.price},0);
+  return {sold:s.length,left:Math.max(0,p.qty-s.length),rev:rev,spent:p.qty*p.cost,
+    profitSold:rev-s.length*p.cost,net:rev-p.qty*p.cost,rate:p.qty?s.length/p.qty:0};
+}
+function totals(){
+  var t={rev:0,spent:0,sold:0,left:0,profitSold:0,net:0,potential:0};
+  state.prints.forEach(function(p){var s=stats(p);t.rev+=s.rev;t.spent+=s.spent;t.sold+=s.sold;t.left+=s.left;
+    t.profitSold+=s.profitSold;t.net+=s.net;t.potential+=s.left*(p.price-p.cost)});
+  return t;
+}
+function suggest(p){
+  var s=stats(p),floor=p.cost*1.5,np=p.price,why,total=state.sales.length;
+  if(s.left===0&&s.sold>0){np=p.price*1.15;why="Sold out. Demand beat supply. Raise the price and reprint."}
+  else if(s.sold===0){why="No sales yet. Hold the price until you have data."}
+  else if(s.rate>=.6){np=p.price*1.1;why="Selling fast ("+Math.round(s.rate*100)+"% gone). Room to raise."}
+  else if(s.rate<.25&&total>=5){np=Math.max(floor,p.price*.9);why="Slow compared to the rest. Try a small cut or a bundle."}
+  else{why="Selling steadily. Hold the price."}
+  if(np<floor){np=floor;why="Margin is thin (under 50% of cost). Price floor is "+money(floor)+"."}
+  np=Math.max(p.cost+.5,Math.round(np*2)/2);
+  return {np:np,why:why,change:np-p.price};
+}
+function toast(m){var t=$("#toast");t.textContent=m;t.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.opacity=0},1600)}
+
+function hero(){
+  var t=totals();
+  var n=$("#net");n.textContent=money(t.net);n.className="big "+(t.net<0?"":"");
+  $("#heroRow").innerHTML="<span>Revenue <b>"+money(t.rev)+"</b></span><span>Print costs <b>"+money(t.spent)+"</b></span><span>Sold <b>"+t.sold+"</b> / left <b>"+t.left+"</b></span>";
+}
+
+function viewSell(){
+  if(!state.prints.length)return '<div class="card empty">No prints yet. Add your first one in the Prints tab.</div>';
+  var h="<h2>Tap when you sell one</h2>";
+  state.prints.forEach(function(p){
+    var s=stats(p);
+    h+='<div class="card item"><div class="grow"><div class="name">'+esc(p.name)+'</div><div class="mute">'+money(p.price)+' each &middot; '+s.left+' left of '+p.qty+'</div></div>'+
+    '<button class="sell" data-act="sell" data-id="'+p.id+'"'+(s.left?"":" disabled")+'>'+(s.left?"Sold 1":"Sold out")+'</button></div>';
+  });
+  var recent=state.sales.slice(-5).reverse();
+  if(recent.length){
+    h+="<h2>Recent sales</h2>";
+    recent.forEach(function(x,i){
+      var p=state.prints.find(function(q){return q.id===x.pid});
+      h+='<div class="card item"><div class="grow"><div class="name">'+esc(p?p.name:"Removed print")+'</div><div class="mute">'+money(x.price)+' &middot; '+new Date(x.t).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+'</div></div>'+
+      (i===0?'<button class="ghost sm" data-act="undo">Undo</button>':"")+'</div>';
+    });
+  }
+  return h;
+}
+
+function viewPrints(){
+  var h='<h2>Add a print</h2><div class="card"><div class="form" id="addForm">'+
+  '<label class="full">Name<input name="name" required maxlength="60" placeholder="e.g. Harbor at Dusk"></label>'+
+  '<label>Sell price ($)<input name="price" type="number" min="0" step="0.01" inputmode="decimal" required></label>'+
+  '<label>Print cost each ($)<input name="cost" type="number" min="0" step="0.01" inputmode="decimal" required></label>'+
+  '<label class="full">Number of prints<input name="qty" type="number" min="1" step="1" inputmode="numeric" required></label>'+
+  '<button class="full" data-act="add">Add print</button></div></div>';
+  h+="<h2>Your prints ("+state.prints.length+")</h2>";
+  if(!state.prints.length)h+='<div class="card empty">Nothing here yet.</div>';
+  state.prints.forEach(function(p){
+    var s=stats(p);
+    h+='<div class="card"><div class="item"><div class="grow"><div class="name">'+esc(p.name)+'</div><div class="mute">Price '+money(p.price)+' &middot; cost '+money(p.cost)+' &middot; margin '+money(p.price-p.cost)+'</div><div class="mute">'+s.left+' left of '+p.qty+'</div></div></div>'+
+    '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="ghost sm" data-act="restock" data-id="'+p.id+'">Add stock</button><button class="ghost sm" data-act="price" data-id="'+p.id+'">Change price</button><button class="ghost sm" data-act="remove" data-id="'+p.id+'">Remove</button></div></div>';
+  });
+  return h;
+}
+
+function viewSummary(){
+  if(!state.prints.length)return '<div class="card empty">Add prints and log some sales to see your summary.</div>';
+  var t=totals(),h="<h2>Sales summary</h2><div class='grid'>"+
+  '<div class="stat"><span class="mute">Revenue</span><b>'+money(t.rev)+'</b></div>'+
+  '<div class="stat"><span class="mute">Print costs paid</span><b>'+money(t.spent)+'</b></div>'+
+  '<div class="stat"><span class="mute">Net profit</span><b class="'+(t.net<0?"bad":"good")+'">'+money(t.net)+'</b></div>'+
+  '<div class="stat"><span class="mute">Profit on sold prints</span><b>'+money(t.profitSold)+'</b></div>'+
+  '<div class="stat"><span class="mute">Units sold</span><b>'+t.sold+'</b></div>'+
+  '<div class="stat"><span class="mute">Still to earn</span><b>'+money(t.potential)+'</b></div></div>'+
+  '<p class="mute">Net profit counts every print you paid for. Profit on sold prints counts only the cost of what has sold. "Still to earn" is the profit left if the remaining stock sells at current prices.</p>';
+
+  var ranked=state.prints.map(function(p){return {p:p,s:stats(p)}}).sort(function(a,b){return b.s.sold-a.s.sold||b.s.rev-a.s.rev});
+  var max=Math.max(1,ranked[0].s.sold);
+  h+="<h2>Best sellers</h2>";
+  ranked.forEach(function(r,i){
+    h+='<div class="card"><div class="item"><div class="grow"><div class="name">'+(i===0&&r.s.sold?"Top: ":"")+esc(r.p.name)+'</div><div class="mute">'+r.s.sold+' sold &middot; '+money(r.s.rev)+' revenue &middot; '+Math.round(r.s.rate*100)+'% of stock</div></div></div><div class="bar"><i style="width:'+(r.s.sold/max*100)+'%"></i></div></div>';
+  });
+
+  h+="<h2>Updated pricing</h2>";
+  state.prints.forEach(function(p){
+    var g=suggest(p),be=p.price>0?Math.ceil(p.qty*p.cost/p.price):0,s=stats(p);
+    h+='<div class="card"><div class="item"><div class="grow"><div class="name">'+esc(p.name)+'</div><div class="mute">'+g.why+'</div></div><div style="text-align:right"><div class="mute">'+money(p.price)+' to</div><b style="font-size:20px" class="'+(g.change>0?"good":g.change<0?"warn":"")+'">'+money(g.np)+'</b></div></div>'+
+    '<div style="margin-top:8px"><span class="tag">Break-even: '+be+' sold</span><span class="tag">'+(s.sold>=be?"Covered":(be-s.sold)+" to go")+'</span></div></div>';
+  });
+
+  var todo=[];
+  state.prints.forEach(function(p){
+    var s=stats(p);
+    if(s.left===0&&s.sold>0)todo.push("Reprint <b>"+esc(p.name)+"</b>. It sold out.");
+    else if(s.left>0&&s.left<=Math.ceil(p.qty*.2)&&s.sold>0)todo.push("<b>"+esc(p.name)+"</b> is almost gone ("+s.left+" left). Plan a reprint.");
+    if(s.sold===0&&state.sales.length>=5)todo.push("<b>"+esc(p.name)+"</b> has no sales. Try new photos, a bundle, or a lower price.");
+  });
+  if(t.net>=0&&t.sold>0)todo.push("You are past break-even overall. Everything from here is profit, so put some into new prints.");
+  else if(t.sold>0)todo.push("You still need "+money(-t.net)+" in sales to break even overall.");
+  if(!todo.length)todo.push("Keep logging sales. Suggestions get sharper with more data.");
+  h+="<h2>Next steps</h2><div class='card'><ul class='todo'>"+todo.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul></div>";
+
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button data-act="copy">Copy summary</button><button class="ghost" data-act="reset">Reset everything</button></div>';
+  return h;
+}
+
+function summaryText(){
+  var t=totals(),L=["PRINT SUMMARY","Revenue: "+money(t.rev),"Print costs: "+money(t.spent),"Net profit: "+money(t.net),"Sold: "+t.sold+" | Left: "+t.left,""];
+  state.prints.forEach(function(p){var s=stats(p),g=suggest(p);L.push(p.name+": "+s.sold+" sold, "+s.left+" left, price "+money(p.price)+" -> suggested "+money(g.np))});
+  return L.join("\n");
+}
+
+function render(){
+  hero();
+  document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab)});
+  $("#app").innerHTML=tab==="sell"?viewSell():tab==="prints"?viewPrints():viewSummary();
+}
+
+function dlg(title,fields,ok,cb){
+  var o=document.createElement("div");o.className="ov";
+  o.innerHTML='<div class="dlg" role="dialog" aria-modal="true"><div class="name">'+esc(title)+'</div>'+fields.map(function(f){return '<label>'+esc(f.label)+'<input data-k="'+f.k+'" type="number" step="any" inputmode="decimal" value="'+esc(f.val||"")+'" placeholder="'+esc(f.ph||"")+'"></label>'}).join("")+'<div style="display:flex;gap:8px"><button class="ghost" data-x="0" style="flex:1">Cancel</button><button data-x="1" style="flex:1">'+esc(ok)+'</button></div></div>';
+  o.addEventListener("click",function(e){
+    var b=e.target.closest("[data-x]");
+    if(e.target===o||(b&&b.dataset.x==="0")){o.remove();return}
+    if(b){var v={};o.querySelectorAll("input").forEach(function(i){v[i.dataset.k]=i.value});o.remove();cb(v)}
+  });
+  document.body.appendChild(o);var i=o.querySelector("input");if(i)i.focus();
+}
+function showText(t){var o=document.createElement("div");o.className="ov";o.innerHTML='<div class="dlg"><div class="name">Copy your summary</div><textarea readonly rows="8" style="font:inherit;font-size:14px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%"></textarea><button data-x="0">Close</button></div>';var ta=o.querySelector("textarea");ta.value=t;o.addEventListener("click",function(e){if(e.target===o||e.target.closest("[data-x]"))o.remove()});document.body.appendChild(o);ta.focus();ta.select()}
+document.addEventListener("click",function(e){
+  var tb=e.target.closest("nav button");
+  if(tb){tab=tb.dataset.tab;render();window.scrollTo(0,0);return}
+  var b=e.target.closest("[data-act]");if(!b)return;
+  var act=b.dataset.act,p=state.prints.find(function(q){return q.id===b.dataset.id});
+  if(act==="sell"&&p&&stats(p).left>0){
+    state.sales.push({id:uid(),pid:p.id,price:p.price,t:Date.now()});
+    save();render();toast("Sold: "+p.name+" +"+money(p.price));
+    var n=$("#net");n.classList.remove("pop");void n.offsetWidth;n.classList.add("pop");
+  }else if(act==="undo"){
+    var x=state.sales.pop();if(x){save();render();toast("Last sale undone")}
+  }else if(act==="add"){
+    var g=function(n){return $('#addForm [name="'+n+'"]').value};
+    var name=g("name").trim(),price=parseFloat(g("price")),cost=parseFloat(g("cost")),qty=parseInt(g("qty"),10);
+    if(!name||isNaN(price)||isNaN(cost)||price<0||cost<0||!(qty>0)){toast("Check the fields");return}
+    state.prints.push({id:uid(),name:name,price:price,cost:cost,qty:qty});
+    save();render();toast("Added "+name);
+  }else if(act==="restock"&&p){
+    dlg("Add stock: "+p.name,[{k:"q",label:"How many more prints?",val:"10"},{k:"c",label:"Print cost each (leave blank to keep "+money(p.cost)+")",ph:money(p.cost)}],"Add stock",function(v){
+      var q=parseInt(v.q,10),nc=parseFloat(v.c);
+      if(!(q>0)){toast("Enter a number of prints");return}
+      if(!isNaN(nc)&&nc>=0&&nc!==p.cost)p.cost=(p.qty*p.cost+q*nc)/(p.qty+q);
+      p.qty+=q;save();render();toast("Stock added")});
+  }else if(act==="price"&&p){
+    dlg("New price: "+p.name,[{k:"v",label:"Price ($)",val:String(p.price)}],"Save",function(v){
+      var n=parseFloat(v.v);
+      if(isNaN(n)||n<0){toast("Enter a valid price");return}
+      p.price=n;save();render();toast("Price updated (past sales keep their price)")});
+  }else if(act==="remove"&&p){
+    dlg("Remove "+p.name+" and its sales history?",[],"Remove",function(){
+      state.prints=state.prints.filter(function(q){return q.id!==p.id});
+      state.sales=state.sales.filter(function(x){return x.pid!==p.id});save();render();toast("Removed")});
+  }else if(act==="copy"){
+    var txt=summaryText();
+    try{navigator.clipboard.writeText(txt).then(function(){toast("Summary copied")},function(){showText(txt)})}catch(er){showText(txt)}
+  }else if(act==="reset"){
+    dlg("Delete all prints and sales? This cannot be undone.",[],"Delete everything",function(){state={prints:[],sales:[]};save();render();toast("Everything reset")});
+  }
+});
+load();render();
+</script>
+</body>
+</html>
