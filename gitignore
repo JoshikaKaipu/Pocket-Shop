@@ -1,0 +1,4 @@
+print_data.json
+print_data.json.tmp
+__pycache__/
+*.pyc
