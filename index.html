@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Print Ledger</title>
+<title>Pocket Shop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
@@ -74,7 +74,7 @@ nav button[aria-current="true"]{background:var(--acc);color:var(--accink)}
 <div class="toast" id="toast" style="opacity:0" role="status"></div>
 
 <script>
-var state={prints:[],sales:[]},tab="sell",KEY="printLedger.v1";
+var state={prints:[],sales:[]},tab="sell",KEY="pocketShop.v1";
 function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);if(d&&d.prints&&d.sales)state=d}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 var $=function(s){return document.querySelector(s)};
