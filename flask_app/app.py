@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print Ledger (web edition).
+"""Pocket Shop (web edition).
 
 Setup (once):   pip install flask
 Run:            python3 app.py
@@ -242,7 +242,7 @@ PAGE = r"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#1B2140">
-<title>Print Ledger</title>
+<title>Pocket Shop</title>
 <style>
 :root{--bg:#EDF0F3;--card:#fff;--ink:#1B2140;--mute:#667088;--line:#D8DDE6;--acc:#2F5BEA;--accink:#fff;--good:#16794D;--bad:#C0392B;--warn:#9A6200;--hero:#1B2140;--heroink:#F2F4FA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root{--bg:#0F1220;--card:#181C30;--ink:#EEF0F8;--mute:#9AA3BD;--line:#2A3050;--acc:#7C9BFF;--accink:#0F1220;--good:#4CC38A;--bad:#FF7A6B;--warn:#E5B04A;--hero:#212848}}
