@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Print Ledger: track art print stock, sales, profit and pricing.
+"""Pocket Shop: track art print stock, sales, profit and pricing.
 
-Run:  python3 print_ledger.py
+Run:  python3 pocket_shop.py
 Data is saved to print_data.json next to this script (standard library only).
 """
 import json
@@ -264,7 +264,7 @@ def main():
     if not state["prints"]:
         first_run_setup()
     while True:
-        print(f"\n--- PRINT LEDGER   net profit {money(totals()['net'])} ---")
+        print(f"\n--- POCKET SHOP   net profit {money(totals()['net'])} ---")
         for i, (label, _) in enumerate(MENU, 1):
             print(f" {i}. {label}")
         print(" 0. Quit")
